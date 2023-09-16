@@ -2,7 +2,7 @@ import type { V2_MetaFunction } from "@remix-run/node";
 import { useNavigate } from "@remix-run/react";
 import { api } from "convex/_generated/api";
 import { useMutation, useQuery } from "convex/react";
-import { Spinner } from "~/components/spinner";
+
 import { useState } from "react";
 
 

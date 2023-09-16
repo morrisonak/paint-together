@@ -1,8 +1,10 @@
 export default {
   providers: [
     {
-      domain: "https://upward-deer-89.clerk.accounts.dev/",
+      domain: "https://pro-chamois-72.clerk.accounts.dev",
       applicationID: "convex",
     },
   ],
 };
+
+

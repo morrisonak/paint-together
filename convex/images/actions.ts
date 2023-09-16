@@ -92,6 +92,7 @@ function findClosestColor(
 
 async function generateImageUsingDalle({ prompt }: { prompt: string }) {
   const imageResponse = await generateDalleImage(prompt);
+  console.log("Debug: imageResponse", imageResponse);
   const imageUrl = imageResponse.data[0].url;
   const imageData = await fetch(imageUrl);
   return await imageData.arrayBuffer();

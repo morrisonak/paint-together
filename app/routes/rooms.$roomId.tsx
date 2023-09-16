@@ -1,7 +1,7 @@
 import { useLoaderData } from "@remix-run/react";
 import classNames from "classnames";
 import { api } from "convex/_generated/api";
-import { Id } from "convex/_generated/dataModel";
+import type { Id } from "convex/_generated/dataModel";
 import { useMutation, useQuery } from "convex/react";
 import { useState } from "react";
 import { convertToGrayScale } from "~/util/pixel-math";

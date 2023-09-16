@@ -5,10 +5,11 @@ import { useMutation, useQuery } from "convex/react";
 import { Spinner } from "~/components/spinner";
 import { useState } from "react";
 
+
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "My App" },
+    { name: "description", content: "Welcome To my app!" },
   ];
 };
 
@@ -23,7 +24,7 @@ export default function Index() {
   return (
     <div className="container mx-auto flex flex-col gap-8">
       <h1 className="text-4xl font-bold">Search for an Image</h1>
-
+        
       <form
         className="flex gap-2"
         onSubmit={(e) => {
@@ -65,7 +66,7 @@ export default function Index() {
               key={image._id}
               className="w-100 h-full flex justify-center items-center"
             >
-              <Spinner />
+             
             </div>
           );
         })}

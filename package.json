@@ -11,6 +11,8 @@
   "dependencies": {
     "@clerk/clerk-react": "^4.24.2",
     "@clerk/remix": "^2.10.2",
+    "@faker-js/faker": "^8.0.2",
+    "@radix-ui/react-form": "^0.0.3",
     "@remix-run/css-bundle": "^1.19.3",
     "@remix-run/node": "^1.19.3",
     "@remix-run/react": "^1.19.3",
@@ -20,6 +22,7 @@
     "isbot": "^3.6.8",
     "jimp": "^0.22.10",
     "lodash": "^4.17.21",
+    "openai": "^4.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.46.1"

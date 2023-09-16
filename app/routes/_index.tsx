@@ -1,10 +1,13 @@
 import type { V2_MetaFunction } from "@remix-run/node";
-import { useNavigate } from "@remix-run/react";
-import { api } from "convex/_generated/api";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
+import { api } from "convex/_generated/api.js";
+import { faker } from "@faker-js/faker";
+import { useUser } from "@clerk/clerk-react";
 
-import { useState } from "react";
+// For demo purposes. In a real app, you'd have real user data.
 
+const NAME = faker.person.firstName();
 
 export const meta: V2_MetaFunction = () => {
   return [
@@ -14,63 +17,58 @@ export const meta: V2_MetaFunction = () => {
 };
 
 export default function Index() {
-  const [search, setSearch] = useState("");
-  const images = useQuery(api.images.queries.getImages, {
-    filter: search,
-  });
-  const createRoom = useMutation(api.rooms.mutations.createRoom);
-  const navigate = useNavigate();
+  const messages = useQuery(api.messages.list);
+  const sendMessage = useMutation(api.messages.send);
+  const [newMessageText, setNewMessageText] = useState("");
+
+  
+
+  useEffect(() => {
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  }, [messages]);
 
   return (
-    <div className="container mx-auto flex flex-col gap-8">
-      <h1 className="text-4xl font-bold">Search for an Image</h1>
-        
-      <form
-        className="flex gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          const formData = new FormData(e.currentTarget);
-          setSearch((formData.get("filter") as string) ?? "");
-        }}
-      >
-        <input
-          placeholder="space ship, dog, cat, food, etc."
-          name="filter"
-          className="text-black rounded px-2 py-2 text-lg self-end w-[300px]"
-        ></input>
-        <button className="disabled:bg-gray-400 disabled:hover:bg-gray-400 mt-4 bg-blue-500 hover:bg-blue-600 rounded-md px-3 py-2 text-xl">
-          Search
-        </button>
-      </form>
-
-      <div className="grid grid-cols-4 gap-12">
-        {images?.map((image) => {
-          return image.imageUrl ? (
-            <button
-              key={image._id}
-              onClick={async () => {
-                const roomId = await createRoom({
-                  imageId: image._id,
-                });
-                navigate(`/rooms/${roomId}`);
-              }}
-            >
-              <img
-                alt={image.prompt}
-                src={image.imageUrl}
-                className="w-100 rounded-xl hover:scale-110"
-              />
-            </button>
-          ) : (
-            <div
-              key={image._id}
-              className="w-100 h-full flex justify-center items-center"
-            >
-             
-            </div>
-          );
-        })}
-      </div>
+    <div className="container flex flex-col gap-8 p-6 mx-auto text-white bg-gray-900">
+    <h1 className="text-4xl font-bold text-center text-white">Remix GPT Chat</h1>
+    <h2 className="text-xl font-semibold text-center text-gray-300">Use @gpt to call the LLM.</h2>
+    <p className="text-center text-gray-400">
+      Connected as <strong className="font-semibold text-white">{NAME}</strong>
+    </p>
+    
+    <div className="flex flex-col gap-4">
+      {messages?.map((message) => (
+        <article
+          key={message._id}
+          className={`p-4 border border-gray-700 rounded ${message.author === NAME ? 'bg-gray-800' : 'bg-gray-700'}`}
+        >
+          <div className="font-semibold text-gray-300">{message.author}</div>
+          <p className="text-sm text-gray-400">{message.body}</p>
+        </article>
+      ))}
     </div>
+    
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        await sendMessage({ body: newMessageText, author: NAME });
+        setNewMessageText("");
+      }}
+      className="flex items-center gap-4"
+    >
+      <input
+        value={newMessageText}
+        onChange={(e) => setNewMessageText(e.target.value)}
+        placeholder="Write a message…"
+        className="flex-1 p-2 text-white bg-gray-800 border border-gray-700 rounded"
+      />
+      <button
+        type="submit"
+        disabled={!newMessageText}
+        className={`py-2 px-4 bg-blue-600 text-white rounded ${!newMessageText ? 'opacity-50 cursor-not-allowed' : ''}`}
+      >
+        Send
+      </button>
+    </form>
+  </div>
   );
 }

@@ -1,38 +1,57 @@
-import type { V2_MetaFunction } from "@remix-run/node";
+import type { LoaderFunction, V2_MetaFunction } from "@remix-run/node";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "convex/_generated/api.js";
-import { faker } from "@faker-js/faker";
 import { useUser } from "@clerk/clerk-react";
-
-// For demo purposes. In a real app, you'd have real user data.
-
-const NAME = faker.person.firstName();
+import { faker } from "@faker-js/faker";
+import { redirect } from "@remix-run/node";
+//import type { LoaderFunction } from "@remix-run/node";
+import { getAuth } from "@clerk/remix/ssr.server";
+import { createClerkClient } from '@clerk/remix/api.server';
+import { useLoaderData } from "@remix-run/react";
 
 export const meta: V2_MetaFunction = () => {
   return [
-    { title: "My App" },
+    { title: "Remix GPT Chat" },
     { name: "description", content: "Welcome To my app!" },
   ];
+};export const loader: LoaderFunction = async (args) => {
+  const { userId } = await getAuth(args);
+ 
+  if (!userId) {
+    return redirect("/sign-in?redirect_url=" + args.request.url);
+  }
+ 
+  const user = await createClerkClient({secretKey: process.env.CLERK_SECRET_KEY}).users.getUser(userId);
+  return { serialisedUser: JSON.stringify(user) };
 };
+
+
+
+
 
 export default function Index() {
   const messages = useQuery(api.messages.list);
   const sendMessage = useMutation(api.messages.send);
   const [newMessageText, setNewMessageText] = useState("");
+  //const { isSignedIn, user } = useUser();
+  //const NAME = faker.name.firstName();
+  const { serialisedUser } = useLoaderData();
+const user = JSON.parse(serialisedUser);
+const NAME = user ? `${user.firstName} ${user.lastName}` : "Unknown";
 
-  
 
   useEffect(() => {
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
   }, [messages]);
+
 
   return (
     <div className="container flex flex-col gap-8 p-6 mx-auto text-white bg-gray-900">
     <h1 className="text-4xl font-bold text-center text-white">Remix GPT Chat</h1>
     <h2 className="text-xl font-semibold text-center text-gray-300">Use @gpt to call the LLM.</h2>
     <p className="text-center text-gray-400">
-      Connected as <strong className="font-semibold text-white">{NAME}</strong>
+      Connected as <strong className="font-semibold text-white"> {NAME} </strong>
     </p>
     
     <div className="flex flex-col gap-4">

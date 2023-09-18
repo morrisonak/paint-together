@@ -2,8 +2,8 @@ import type { LoaderFunction, V2_MetaFunction } from "@remix-run/node";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "convex/_generated/api.js";
-import { useUser } from "@clerk/clerk-react";
-import { faker } from "@faker-js/faker";
+//import { useUser } from "@clerk/clerk-react";
+//import { faker } from "@faker-js/faker";
 import { redirect } from "@remix-run/node";
 //import type { LoaderFunction } from "@remix-run/node";
 import { getAuth } from "@clerk/remix/ssr.server";
@@ -17,9 +17,10 @@ export const meta: V2_MetaFunction = () => {
   ];
 };export const loader: LoaderFunction = async (args) => {
   const { userId } = await getAuth(args);
+  console.log(userId);
  
   if (!userId) {
-    return redirect("/sign-in?redirect_url=" + args.request.url);
+    return redirect("/landing");
   }
  
   const user = await createClerkClient({secretKey: process.env.CLERK_SECRET_KEY}).users.getUser(userId);
@@ -38,7 +39,7 @@ export default function Index() {
   //const NAME = faker.name.firstName();
   const { serialisedUser } = useLoaderData();
 const user = JSON.parse(serialisedUser);
-const NAME = user ? `${user.firstName} ${user.lastName}` : "Unknown";
+const NAME = user ? `${user.firstName} ${user.lastName} ${user.id}` : "Unknown";
 
 
   useEffect(() => {

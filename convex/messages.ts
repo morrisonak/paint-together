@@ -1,13 +1,13 @@
 import { internal } from "./_generated/api";
-import { internalMutation, mutation } from "./_generated/server";
-import { query } from "./_generated/server";
-import { Doc, Id } from "./_generated/dataModel";
+import { internalMutation, mutation, query } from "./_generated/server";
+
+import type { Doc, Id } from "./_generated/dataModel";
 import { v } from "convex/values";
 
 export const list = query({
   handler: async ({ db }): Promise<Doc<"messages">[]> => {
     // Grab the most recent messages.
-    const messages = await db.query("messages").order("desc").take(100);
+    const messages = await db.query("messages").order("desc").take(5);
     // Reverse the list so that it's in chronological order.
     return messages.reverse();
   },
@@ -18,6 +18,17 @@ export const send = mutation({
   handler: async ({ db, scheduler }, { body, author }) => {
     // Send our message.
     await db.insert("messages", { body, author });
+
+     // Check for the '@memory' command in the user's message
+     if (body.indexOf("@memory") !== -1) {
+      // Save the memory
+      await db.insert("memories", { body: body.replace("@memory ", ""), author });
+      
+      // Send a confirmation message
+      await db.insert("messages", { body: "Memory saved.", author: "System" });
+    }
+
+    
 
     if (body.indexOf("@gpt") !== -1) {
       // Fetch the latest n messages to send as context.

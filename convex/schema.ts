@@ -6,4 +6,8 @@ export default defineSchema({
     author: v.string(),
     body: v.string(),
   }),
+  memories: defineTable({
+    author: v.string(),
+    body: v.string(),
+  }),
 });

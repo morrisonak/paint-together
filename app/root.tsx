@@ -53,10 +53,10 @@ function App() {
         <Meta />
         <Links />
       </head>
-      <body className="dark:bg-gray-900 dark:text-white">
+      <body className="dark:bg-gradient-to-l from-gray-900 to-gray-950 dark:text-white">
         <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
           <Header />
-          <div className="pt-8 pb-8 container mx-auto">
+          <div className="container pt-8 pb-8 mx-auto">
             <Outlet />
           </div>
         </ConvexProviderWithClerk>

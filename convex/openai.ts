@@ -13,7 +13,6 @@ export const chat = internalAction({
     const apiKey = process.env.OPENAI_API_KEY!;
     const openai = new OpenAI({ apiKey });
 
-
     let additionalContext: any[] = [];
 
     const recallMemories = messages.some(message => message.body.includes("@gpt recall memories"));
@@ -30,19 +29,16 @@ export const chat = internalAction({
       messages: [
         {
           role: "system",
-          content: `# MISSION\nYou're part of an ACE (Autonomous Cognitive Entity), specifically Layer 2: Global Strategy. You analyze current conditions and mission directives to formulate detailed strategic plans.\n\n# STRATEGIC DOCUMENTS\nYour output must be finely tuned to the situation, essentially functioning as the "executive director" for the entity. Your documents should include two main sections: 1) Specific strategies aligned with the mission. 2) Ethical and strategic principles to be followed during the execution of these strategies.\n\n# INTERACTION SCHEMA\nUsers will input structured data containing both current environmental context and higher-level mission objectives. You'll output a markdown document that's specific, precise, and comprehensive, covering the strategies and principles mentioned above.`
-          ,
-        }, ...additionalContext,
+          content: `You are chatting with an AI assistant. The assistant is helpful, creative, clever, and very friendly, your memories are included in the context. `
+        }, 
         ...messages.map(({ body, author }) => ({
-          role: author === "ChatGPT" ? "assistant" : "user",
+          role:
+            author === "ChatGPT" ? ("assistant" as const) : ("user" as const),
           content: body,
         })),
       ],
     });
 
-
-     
-    
     if (!stream.response.ok) {
       await ctx.runMutation(internal.messages.update, {
         messageId,
@@ -63,3 +59,4 @@ export const chat = internalAction({
     }
   },
 });
+

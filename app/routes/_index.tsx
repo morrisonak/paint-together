@@ -39,7 +39,7 @@ export default function Index() {
   //const NAME = faker.name.firstName();
   const { serialisedUser } = useLoaderData();
 const user = JSON.parse(serialisedUser);
-const NAME = user ? `${user.firstName} ${user.lastName} ${user.id}` : "Unknown";
+const NAME = user ? `${user.firstName} ${user.lastName} ` : "Unknown";
 
 
   useEffect(() => {
@@ -48,7 +48,10 @@ const NAME = user ? `${user.firstName} ${user.lastName} ${user.id}` : "Unknown";
 
 
   return (
-    <div className="container flex flex-col gap-8 p-6 mx-auto text-white bg-gray-900">
+    <div className="container flex flex-col gap-8 p-6 mx-auto text-white rounded-lg shadow-lg" 
+    style={{background: 'radial-gradient(circle, rgba(58, 58, 70, 1) 0%, rgba(0, 0, 10, 1) 100%)'}}
+  >
+  
     <h1 className="text-4xl font-bold text-center text-white">Remix GPT Chat</h1>
     <h2 className="text-xl font-semibold text-center text-gray-300">Use @gpt to call the LLM.</h2>
     <p className="text-center text-gray-400">
@@ -59,10 +62,10 @@ const NAME = user ? `${user.firstName} ${user.lastName} ${user.id}` : "Unknown";
       {messages?.map((message) => (
         <article
           key={message._id}
-          className={`p-4 border border-gray-700 rounded ${message.author === NAME ? 'bg-gray-800' : 'bg-gray-700'}`}
+          className={`p-4 border border-gray-700 rounded bg-opacity-90 ${message.author === NAME ? 'bg-gray-800' : 'bg-gray-700'}`}
         >
           <div className="font-semibold text-gray-300">{message.author}</div>
-          <p className="text-sm text-gray-400">{message.body}</p>
+          <p className="text-lg text-gray-300">{message.body}</p>
         </article>
       ))}
     </div>

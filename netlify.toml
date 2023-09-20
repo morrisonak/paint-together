@@ -1,5 +1,5 @@
 [build]
-  command = "remix build"
+  command = "npm run build && npx convex deploy --typecheck=disable"
   publish = "public"
 
 [dev]
